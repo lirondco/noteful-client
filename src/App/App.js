@@ -17,7 +17,7 @@ class App extends Component {
     folders: [],
   };
 
-  componentDidMount() {
+  handleApiFetch = () => {
     Promise.all([
       fetch(`${config.API_ENDPOINT}/notes`),
       fetch(`${config.API_ENDPOINT}/folders`)
@@ -34,11 +34,17 @@ class App extends Component {
         ])
       })
       .then(([notes, folders]) => {
-        this.setState({ notes, folders })
+        this.setState({ notes, folders }, () => {
+          console.log(this.state)
+        })
       })
       .catch(error => {
         console.error({ error })
       })
+  }
+
+  componentDidMount() {
+    this.handleApiFetch();
   }
 
   handleAddFolder = folder => {
@@ -62,7 +68,7 @@ class App extends Component {
   handleDeleteNote = noteId => {
     this.setState({
       notes: this.state.notes.filter(note => note.id !== noteId)
-    })
+    }, () => console.log("deleted ", noteId))
   }
 
   renderNavRoutes() {
